@@ -1,0 +1,39 @@
+{
+  "expected_translations": {
+    "en-US": {
+      "page_title": "Automation Exercise",
+      "products_link": "Products",
+      "login_link": "Signup / Login",
+      "cart_link": "Cart"
+    },
+    "fr-FR": {
+      "page_title": "Exercice d'automatisation",
+      "products_link": "Produits",
+      "login_link": "S'inscrire / Se connecter",
+      "cart_link": "Panier"
+    },
+    "de-DE": {
+      "page_title": "Automatisierungsübung",
+      "products_link": "Produkte",
+      "login_link": "Anmelden / Registrieren",
+      "cart_link": "Warenkorb"
+    }
+  },
+  "test_currencies": {
+    "USD": {
+      "symbol": "$",
+      "format": "${amount}",
+      "example": "$1,234.56"
+    },
+    "EUR": {
+      "symbol": "€",
+      "format": "{amount} €",
+      "example": "1.234,56 €"
+    },
+    "GBP": {
+      "symbol": "£",
+      "format": "£{amount}",
+      "example": "£1,234.56"
+    }
+  }
+}

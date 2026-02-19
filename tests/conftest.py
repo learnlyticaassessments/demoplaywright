@@ -7,7 +7,7 @@ WHAT IS conftest.py?
 """
 import sys
 from pathlib import Path
-
+from config.locales import get_all_locales,get_locale_config
 
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
@@ -141,3 +141,87 @@ def browser_context_args(browser_context_args):
         "locale": "en-US",
         "timezone_id": "America/New_York"
     }
+
+
+
+# ============ LOCALE FIXTURES ============
+
+@pytest.fixture
+def locale(request):
+    """
+    FIXTURE: Provides locale code
+    
+    Can be parameterized:
+    @pytest.mark.parametrize("locale", ["en-US", "fr-FR"])
+    """
+    return request.param if hasattr(request, 'param') else "en-US"
+
+@pytest.fixture
+def locale_config(locale):
+    """
+    FIXTURE: Provides complete locale configuration
+    
+    RETURNS:
+    {
+        "locale": "en-US",
+        "timezone": "America/New_York",
+        "currency": "USD",
+        ...
+    }
+    """
+    return get_locale_config(locale)
+
+@pytest.fixture(scope="session")
+def browser_context_args_with_locale(browser_context_args, request):
+    """
+    FIXTURE: Configure browser context with locale
+    
+    USAGE: Run tests with specific locale
+    pytest --locale=fr-FR
+    """
+    locale = request.config.getoption("--locale", default="en-US")
+    config = get_locale_config(locale)
+    
+    return {
+        **browser_context_args,
+        "locale": config["locale"],
+        "timezone_id": config["timezone"],
+        "viewport": {"width": 1920, "height": 1080}
+    }
+
+# ============ COMMAND LINE OPTIONS ============
+
+def pytest_addoption(parser):
+    """
+    Add custom command line options
+    
+    USAGE:
+    pytest --locale=fr-FR
+    pytest --browser=firefox
+    """
+    parser.addoption(
+        "--locale",
+        action="store",
+        default="en-US",
+        help="Locale for testing (e.g., en-US, fr-FR)"
+    )
+    parser.addoption(
+        "--browser",
+        action="store",
+        default="chromium",
+        help="Browser to use (chromium, firefox, webkit)"
+    )
+
+# ============ RTL (Right-to-Left) FIXTURE ============
+
+@pytest.fixture
+def is_rtl(locale_config):
+    """
+    FIXTURE: Check if locale uses RTL layout
+    
+    USAGE:
+    def test_layout(is_rtl):
+        if is_rtl:
+            # Test RTL-specific behavior
+    """
+    return locale_config.get("rtl", False)
