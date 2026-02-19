@@ -5,6 +5,12 @@ WHAT IS conftest.py?
 - Fixtures defined here available to ALL tests
 - No need to import
 """
+import sys
+from pathlib import Path
+
+
+project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(project_root))
 import pytest
 from pages.home_page import HomePage
 from pages.login_page import LoginPage
