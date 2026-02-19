@@ -17,7 +17,7 @@ from pages.login_page import LoginPage
 
 # ============ BASIC FIXTURES ============
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def base_url():
     """
     FIXTURE: Provides base URL
