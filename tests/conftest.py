@@ -205,12 +205,7 @@ def pytest_addoption(parser):
         default="en-US",
         help="Locale for testing (e.g., en-US, fr-FR)"
     )
-    parser.addoption(
-        "--browser",
-        action="store",
-        default="chromium",
-        help="Browser to use (chromium, firefox, webkit)"
-    )
+    
 
 # ============ RTL (Right-to-Left) FIXTURE ============
 
