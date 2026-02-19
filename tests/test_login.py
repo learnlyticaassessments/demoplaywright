@@ -1,49 +1,46 @@
 """
-Login Tests using Page Object Model
-Demonstrates: How to use page objects in tests
+Login/Signup Tests
+Covers: Login scenarios, Signup scenarios
 """
 import pytest
-from pages.home_page import HomePage
+import time
 from pages.login_page import LoginPage
+from pages.home_page import HomePage
 
-def test_navigate_to_login_page(page):
+@pytest.fixture
+def login_page(page):
+    return LoginPage(page)
+
+@pytest.fixture
+def home_page(page):
+    return HomePage(page)
+
+def test_navigate_to_login(home_page, login_page):
     """
-    TEST: Verify user can navigate to login page
-    
-    FIXTURES USED:
-    - page: Playwright's page fixture
-    
-    PAGE OBJECTS USED:
-    - HomePage
-    - LoginPage
+    TEST 6: Navigate to login page
     """
-    # ARRANGE: Create page objects
-    home_page = HomePage(page)
-    login_page = LoginPage(page)
+    home_page.navigate_to_home()
+    home_page.click_login()
+    login_page.verify_login_page_loaded()
+
+def test_login_with_invalid_email(login_page):
+    """
+    TEST 7: Login with invalid credentials
+    """
+    login_page.navigate_to_login()
+    login_page.perform_login("invalid@test.com", "wrongpass")
     
-    # ACT: Navigate to home, then login
+    # Verify error
+    error = login_page.page.locator("text=Your email or password is incorrect")
+    assert error.is_visible()
+
+def test_signup_page_accessible(home_page, login_page):
+    """
+    TEST 8: Verify signup form is accessible
+    """
     home_page.navigate_to_home()
     home_page.click_login()
     
-    # ASSERT: Verify we're on login page
-    login_page.verify_login_page_loaded()
-
-def test_login_with_invalid_credentials(page):
-    """
-    TEST: Login with wrong credentials shows error
-    
-    DEMONSTRATES:
-    - Page object methods
-    - Negative testing
-    """
-    # ARRANGE
-    login_page = LoginPage(page)
-    
-    # ACT
-    login_page.navigate_to_login()
-    login_page.perform_login("wrong@email.com", "wrongpassword")
-    
-    # ASSERT: Error message appears
-    error = page.locator("text=Your email or password is incorrect")
-    assert error.is_visible()
-    print("✅ Error message displayed correctly")
+    # Verify signup form visible
+    assert login_page.signup_button.is_visible()
+    print("✅ Signup form accessible")
